@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const PORT = 8000;
+
+app.use(cors());
 
 let songs = [
     {
@@ -49,8 +52,13 @@ app.get('/songs/:songName', (request, response) => {
 app.get('/songs', (request, response) => {
     //console.log(songs);
     return response.json(songs);
+});
+
+/* CREATE **/
+app.post('/songs/:newSong', (request, response) => {
+
 })
 
-app.listen(PORT, () => {
+app.listen(process.env.PORT || PORT, () => {
     console.log(`Server running on ${PORT}`);
 })
