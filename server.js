@@ -3,39 +3,31 @@ const app = express();
 const cors = require('cors');
 const PORT = 8000;
 
-let wilcoSongs = [
-    {
-        "id": 1,
-        "songName": 'what light',
-        "albumName": 'sky blue sky',
-    },
-    {
-        "id": 2,
-        "songName": 'heavy metal drummer',
-        "albumName": "yankee hotel foxtrot"
-    },
-    {
-        "id": 3,
-        "songName": 'box full of letters',
-        "albumName": 'a.m.'
-    },
-    {
-        "id": 4,
-        "songName": 'impossible germany',
-        "albumName": 'sky blue sky'
-    },
-    {
-        "id": 5,
-        "songName": 'misunderstood',
-        "albumName": 'being there'
-    }
-];
+const MongoClient = require('mongodb').MongoClient;
 
+let db,
+    dbConnectionStr = process.env.DB_STRING,
+    dbName = 'best-wilco-songs'
+
+MongoClient.connect(dbConnectionStr)
+    .then(client => {
+        console.log(`Connected to ${dbName} Database`)
+        db = client.db(dbName);
+    })
+
+app.set('view engine', 'ejs'); // telling us we are using ejs to generate our html
+app.use(express.static('public'));  // any file in the public folder will be served up
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(cors());
 
 app.get('/', (request, response) => {
-    response.sendFile(__dirname + '/index.html');
-    return response.json(wilcoSongs);
+    db.collection('wilcoSongs').find().sort({ likes: -1 }).toArray() // an array holding my database for this collection (an array of objects)
+        .then(data => {
+            console.log(data);
+            response.render('index.ejs', { info: data })
+        })
+        .catch(error => console.error(error));
 });
 
 // GET one song
@@ -56,8 +48,11 @@ app.get('/songs', (request, response) => {
 });
 
 /* CREATE **/
-app.post('/songs/:newSong', (request, response) => {
-
+app.post('/addSong', (request, response) => {
+    db.collection('wilcoSongs').insertOne({ songName: request.body.songName, albumName: request.body.albumName, likes: 0 })
+        .then(result => {
+            console.log(result);
+        })
 })
 
 app.listen(process.env.PORT || PORT, () => {

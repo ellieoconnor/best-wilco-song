@@ -6,12 +6,14 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "node server.js",
-        "dev": "node --watch server.js"
+        "dev": "node --env-file=.env --watch server.js"
     },
     "author": "Elizabeth O'Connor",
     "license": "ISC",
     "dependencies": {
         "cors": "^2.8.6",
-        "express": "^5.2.1"
+        "ejs": "^6.0.1",
+        "express": "^5.2.1",
+        "mongodb": "^7.6.0"
     }
 }
