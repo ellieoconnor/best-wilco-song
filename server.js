@@ -24,7 +24,7 @@ app.use(cors());
 app.get('/', (request, response) => {
     db.collection('wilcoSongs').find().sort({ likes: -1 }).toArray() // an array holding my database for this collection (an array of objects)
         .then(data => {
-            console.log(data);
+            //console.log(data);
             response.render('index.ejs', { info: data })
         })
         .catch(error => console.error(error));
@@ -42,10 +42,10 @@ app.get('/', (request, response) => {
 //    return response.json(song);
 //});
 
-app.get('/songs', (request, response) => {
-    //console.log(songs);
-    return response.json(wilcoSongs);
-});
+//app.get('/songs', (request, response) => {
+//    //console.log(songs);
+//    return response.json(wilcoSongs);
+//});
 
 /* CREATE **/
 app.post('/addSong', (request, response) => {
@@ -57,14 +57,35 @@ app.post('/addSong', (request, response) => {
         .catch(error => console.error(error));
 });
 
-//app.put('/addOneLike', (request, response) => {
-//    db.collection('wilcoSongs').updateOne({ songName: request.body.songNameS,
-//        albumName: request.body.albumNameS, likes: request.body.likesS }, {
-//            $set: {
-//                likes: request.body.likesS + 1
-//            }
-//        }
-//    })
+/* UPDATE **/
+app.put('/addOneLike', (request, response) => {
+    db.collection('wilcoSongs').updateOne({ songName: request.body.songNameS, albumName: request.body.albumNameS, likes: request.body.likesS },
+        {
+            $set: {
+                likes: request.body.likesS + 1
+            }
+        },
+        {
+            sort: { _id: -1 },
+            upsert: false
+        }
+    )
+        .then(result => {
+            console.log('Added One Like');
+            response.json('Like Added');
+        })
+        .catch(error => console.error(error));
+});
+
+/* Delete **/
+app.delete('/deleteSong', (request, response) => {
+    db.collection('wilcoSongs').deleteOne({ songName: request.body.songNameS })
+        .then(result => {
+            console.log('Song Deleted');
+            response.json('Song Deleted');
+        })
+        .catch(error => console.error(error));
+})
 
 app.listen(process.env.PORT || PORT, () => {
     console.log(`Server running on ${PORT}`);
