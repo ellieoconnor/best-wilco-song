@@ -31,16 +31,16 @@ app.get('/', (request, response) => {
 });
 
 // GET one song
-app.get('/songs/:songName', (request, response) => {
-    const songName = request.params.songName.toLowerCase();
-    const song = wilcoSongs.find(s => s.songName === songName);
+//app.get('/songs/:songName', (request, response) => {
+//    const songName = request.params.songName.toLowerCase();
+//    const song = wilcoSongs.find(s => s.songName === songName);
 
-    if (!song) {
-        return response.status(404).json({ error: "Song not found" });
-    }
+//    if (!song) {
+//        return response.status(404).json({ error: "Song not found" });
+//    }
 
-    return response.json(song);
-});
+//    return response.json(song);
+//});
 
 app.get('/songs', (request, response) => {
     //console.log(songs);
@@ -51,9 +51,20 @@ app.get('/songs', (request, response) => {
 app.post('/addSong', (request, response) => {
     db.collection('wilcoSongs').insertOne({ songName: request.body.songName, albumName: request.body.albumName, likes: 0 })
         .then(result => {
-            console.log(result);
+            console.log('Song Added');
+            response.redirect('/'); // "refresh" page and gets the data
         })
-})
+        .catch(error => console.error(error));
+});
+
+//app.put('/addOneLike', (request, response) => {
+//    db.collection('wilcoSongs').updateOne({ songName: request.body.songNameS,
+//        albumName: request.body.albumNameS, likes: request.body.likesS }, {
+//            $set: {
+//                likes: request.body.likesS + 1
+//            }
+//        }
+//    })
 
 app.listen(process.env.PORT || PORT, () => {
     console.log(`Server running on ${PORT}`);

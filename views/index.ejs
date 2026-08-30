@@ -6,13 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Best Wilco Song</title>
     <link rel="stylesheet" href="/css/styles.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
     <h1>Current Songs</h1>
     <ul clas="songs">
         <% for(let i=0; i < info.length; i++) {%>
             <li class="song">
-                <span><%= info[i].song %></span>
+                <span><%= info[i].songName %></span>
                 <span><%= info[i].albumName %></span>
                 <span><%= info[i].likes %></span>
                 <i class="fa fa-thumbs-up"></i>
